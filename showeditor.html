@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playground</title>
+    <link rel="shortcut icon" href="https://i.pinimg.com/originals/84/84/47/84844787f6e370e8cb14154d3ba7f7aa.png" type="image">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+        </style>
+    <style>
+
+        *{
+            font-family: Roboto;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            font-weight: bold;
+            letter-spacing: 1px;
+            background: #0f0f0f;
+            color: white;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+
+
+        .editor{
+            padding: 20px;
+            border-radius: 15px;
+            width: 50%;
+        }
+
+        .preview {
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .editor label {
+            display: block;
+            margin: 10px 0px;
+            font-weight: bold;
+        }
+        .editor input, .editor select, .editor textarea, .editor button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            outline: none;
+            border: 1px solid rgba(255, 255, 255, 0.103);
+            border-radius: 15px;    
+
+            background: #0f0f0f;
+            color: white;
+            transition: .3s ease;
+        }
+        .editor button {
+            cursor: pointer;
+            background-color: #009dff;
+            color: white;
+        }
+        .editor button:hover {
+            background-color: #0083d4;
+        }
+        .preview {
+            background: #0f0f0f;
+            overflow-y: auto;
+            max-height: fit-content;
+        }
+
+        #back-to-add-tab{
+            background-color: green; color: white; border: none; padding: 10px 10px; margin-bottom: 20px; cursor: pointer;
+        }
+
+        #back-to-add-tab:hover{
+            background: lime;
+            color: black;
+        }
+
+        #delete-tab{
+            background-color: red; color: white; border: none; padding: 10px 10px; margin-bottom: 20px; cursor: pointer;
+        }
+
+        #delete-tab:hover{
+            background: darkred;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #888; 
+            border-radius: 25px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #009dff; 
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="editor">
+        <div id="add-content-section" style="display: block;">
+        <h2>Playground</h2>
+        <label for="existing-categories">Select Category</label>
+        <select id="existing-categories"></select>
+
+        <label for="new-category">Or Create New Category</label>
+        <input type="text" id="new-category" placeholder="New category name">
+
+        <button id="add-category">Add Category</button>
+
+        <label for="existing-shows">Select Show (to add episodes)</label>
+        <select id="existing-shows">
+            <option value="">-- Create New Show --</option>
+        </select>
+
+        <label for="new-show">Or Create New Show</label>
+        <input type="text" id="new-show" placeholder="New show name">
+
+        <label for="data-description">Show Description</label>
+        <input type="text" id="data-description" placeholder="Show Description">
+
+        <label for="show-presents">Show Presents Title</label>
+        <input type="text" id="show-presents" placeholder="Show Presents Title">
+
+        <label for="show-tags">Show Tags</label>
+        <input type="text" id="show-tags" placeholder="Show Tags">
+
+        <label for="thumbnail-url">Thumbnail File Name</label>
+        <input type="text" id="thumbnail-url" placeholder="Thumbnail URL">
+
+        <label for="banner-url">Show Data-Banner File Name</label>
+        <input type="text" id="banner-url" placeholder="Upload Image to GitHub Repo">
+
+        <button id="add-show">Add Show</button>
+
+        <h3>Add Episode to Show</h3>
+        <label for="episode-title">Episode Title</label>
+        <input type="text" id="episode-title" placeholder="Episode title">
+
+        <label for="episode-title">Episode Description</label>
+        <input type="text" id="episode-description" placeholder="Episode Description">
+
+        <label for="episode-thumbnail">Episode Thumbnail File Name</label>
+        <input type="text" id="episode-thumbnail" placeholder="Upload Image to GitHub Repo">
+
+        <label for="episode-url">Episode URL</label>
+        <input type="text" id="episode-url" placeholder="Episode URL">
+
+        <button id="add-episode">Add Episode</button>
+
+        <div class="actions">
+            <button id="copy-html">Copy HTML</button>
+
+        </div>
+        <button id="clear-library">Clear Library</button>
+        <input type="file" id="import-library" accept=".json" style="display: none;">
+        <button id="import-library-button">Import Library</button>
+        <button id="export-library">Export Library</button>
+        <button id="delete-tab">Delete Tab</button>
+
+    </div>
+        <div id="delete-content-section" style="display: none;">
+            <!-- Delete UI -->
+            <h3>Delete Show</h3>
+
+            <label for="delete-show">Select Show to Delete</label>
+            <select id="delete-show">
+                <option value="">-- Select Show --</option>
+            </select>
+            <button id="delete-show-button">Delete Show</button>
+        
+            <h3>Delete Episode</h3>
+            <label for="delete-episode-show">Select Show (to delete episode)</label>
+            <select id="delete-episode-show">
+                <option value="">-- Select Show --</option>
+            </select>
+            <label for="delete-episode">Select Episode to Delete</label>
+            <select id="delete-episode">
+                <option value="">-- Select Episode --</option>
+            </select>
+            <button id="delete-episode-button">Delete Episode</button>
+            
+<input type="file" id="import-library" accept=".json" style="display: none;">
+<button id="import-library-button">Import Library</button>
+<button id="export-library">Export Library</button>
+<button id="back-to-add-tab">Back to Main Tab</button>
+        </div>
+
+    </div>
+
+    <div class="preview" id="live-preview">
+        <!-- Live preview of the video library will be displayed here -->
+    </div>
+</div>
+
+<script>
+    let libraryHTML = `
+        <div class="gallery-container">
+        <div class="content-long">
+    <div class="content">
+<h4>Please Import a Library.</h4>
+</div></div></div>
+`;
+
+    const livePreview = document.getElementById('live-preview');
+    const categorySelect = document.getElementById('existing-categories');
+    const showSelect = document.getElementById('existing-shows');
+
+    function updatePreview() {
+        livePreview.innerHTML = libraryHTML;
+        populateCategories();
+        populateShows();
+    }
+
+    function populateCategories() {
+        categorySelect.innerHTML = ''; 
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(libraryHTML, 'text/html');
+        const categories = doc.querySelectorAll('.library h4');
+
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.textContent.trim();
+            option.textContent = category.textContent.trim();
+            categorySelect.appendChild(option);
+        });
+    }
+
+    function populateShows() {
+        showSelect.innerHTML = '<option value="">-- Create New Show --</option>';
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(libraryHTML, 'text/html');
+        const shows = doc.querySelectorAll('.content a[data-title]');
+
+        shows.forEach(show => {
+            const option = document.createElement('option');
+            const title = show.getAttribute('data-title');
+            if (title) {
+                option.value = title.trim();
+                option.textContent = title.trim();
+                showSelect.appendChild(option);
+            }
+        });
+    }
+
+    document.getElementById('add-category').addEventListener('click', () => {
+        const newCategory = document.getElementById('new-category').value.trim();
+        if (!newCategory) return alert('Please enter a category name.');
+
+        const categoryHTML = `
+            <h4>${newCategory}</h4>
+            <div class="gallery-container">
+                <div class="content-long">
+                    <div class="content"></div>
+                </div>
+            </div>`;
+        libraryHTML += categoryHTML;
+
+        updatePreview();
+        document.getElementById('new-category').value = '';
+
+        
+    });
+
+    
+
+
+    document.getElementById('add-show').addEventListener('click', () => {
+    const selectedCategory = categorySelect.value;
+    const showPresents = document.getElementById('show-presents').value.trim();
+    const newShow = document.getElementById('new-show').value.trim();
+    const showTags = document.getElementById('show-tags').value.trim();
+    const showDesc = document.getElementById('data-description').value.trim();
+    const thumbnailURL = document.getElementById('thumbnail-url').value.trim();
+    const bannerURL = document.getElementById('banner-url').value.trim();
+
+    if (!selectedCategory || !newShow || !thumbnailURL || !bannerURL) {
+        return alert('Please complete all fields to add a new show.');
+    }
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(libraryHTML, 'text/html');
+    const category = Array.from(doc.querySelectorAll('.library h4')).find(h4 => h4.textContent.trim() === selectedCategory);
+
+    if (category) {
+        const contentDiv = category.nextElementSibling.querySelector('.content');
+        if (contentDiv) {
+            // Build the HTML structure for the new show
+            let showHTML = `
+                <a data-presents="${showPresents}" data-title="${newShow}" data-tags="${showTags}" data-description="${showDesc}" data-background="https://bysurf.github.io/tvserver/img/${bannerURL}">
+            `;
+
+            // Add special elements if the category ID is "New Content"
+            if (selectedCategory === "New Content") {
+                showHTML += `
+                    <div class="new-content-gradient"></div>
+                    <span class="new-tag">New</span>
+                    <h3 class="new-vid-text">${newShow}</h3>
+                    <p class="new-vid-p">${showDesc}</p>
+                `;
+            }
+
+            // Add the image element
+            showHTML += `
+                    <img src="https://bysurf.github.io/tvserver/img/${thumbnailURL}" alt="${newShow}">
+                </a>`;
+
+            // Insert the new show HTML
+            contentDiv.insertAdjacentHTML('beforeend', showHTML);
+
+            // Update the libraryHTML and preview
+            libraryHTML = doc.body.innerHTML;
+            updatePreview();
+
+            // Clear the input fields
+            document.getElementById('new-show').value = '';
+            document.getElementById('show-presents').value = '';
+            document.getElementById('show-tags').value = '';
+            document.getElementById('data-description').value = '';
+            document.getElementById('thumbnail-url').value = '';
+            document.getElementById('banner-url').value = '';
+        }
+    }
+});
+
+
+    document.getElementById('add-episode').addEventListener('click', () => {
+        const selectedShow = showSelect.value;
+        const episodeTitle = document.getElementById('episode-title').value.trim();
+        const episodeDesc = document.getElementById('episode-description').value.trim();
+        const episodeThumbnail = document.getElementById('episode-thumbnail').value.trim();
+        const episodeURL = document.getElementById('episode-url').value.trim();
+
+        if (!selectedShow) {
+            return alert('Please select a show to add an episode.');
+        }
+        if (!episodeTitle || !episodeThumbnail) {
+            return alert('Please complete all fields to add an episode.');
+        }
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(libraryHTML, 'text/html');
+        const show = Array.from(doc.querySelectorAll('.content a')).find(a => a.getAttribute('data-title') === selectedShow);
+
+        if (show) {
+            const episodes = JSON.parse(show.getAttribute('data-episodes') || '[]');
+            episodes.push({
+                title: episodeTitle,
+                description: episodeDesc,
+                thumbnail: episodeThumbnail,
+                url: episodeURL
+            });
+            show.setAttribute('data-episodes', JSON.stringify(episodes));
+
+            libraryHTML = doc.body.innerHTML;
+            updatePreview();
+
+            document.getElementById('episode-title').value = '';
+            document.getElementById('episode-description').value = '';
+            document.getElementById('episode-thumbnail').value = '';
+            document.getElementById('episode-url').value = '';
+        }
+    });
+
+    document.getElementById('copy-html').addEventListener('click', () => {
+    const appendScript = `
+`;
+
+    // Combine generated libraryHTML with the appendScript
+    const finalHTML = libraryHTML + appendScript;
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(finalHTML).then(() => {
+        alert('HTML with additional code copied to clipboard!');
+    }).catch(err => {
+        console.error('Error copying text to clipboard:', err);
+    });
+});
+
+
+    updatePreview();
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+const modal = document.getElementById('modal');
+const modalHeader = document.querySelector('.modal-header');
+const modalPresents = document.getElementById('modal-presents');
+const modalTitle = document.getElementById('modal-title');
+const modalTags = document.getElementById('modal-tags');
+const modalDescription = document.getElementById('modal-description');
+const episodeList = document.getElementById('episode-list');
+const modalClose = document.getElementById('modal-close');
+const overlay = document.getElementById('overlay');
+
+document.querySelectorAll('.content a').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+        const parentContent = link.closest('.content');
+
+        if (parentContent && parentContent.id === 'new-content') {
+            // Handle links within #new-content for redirection
+            const encodedEpisodes = link.getAttribute('data-episodes') || '[]';
+            try {
+                // Decode HTML entities and parse JSON
+                const episodes = JSON.parse(encodedEpisodes.replace(/&quot;/g, '"'));
+                if (episodes.length > 0) {
+                    const redirectUrl = episodes[0].url; // Use the URL from the first episode
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl; // Redirect the user
+                        return; // Stop further execution
+                    }
+                }
+            } catch (error) {
+                console.error('Error parsing data-episodes:', error);
+            }
+            return; // Exit for links inside #new-content
+        }
+
+        // For links outside #new-content, show the modal
+        e.preventDefault();
+
+        // Retrieve data attributes
+  const presents = link.getAttribute('data-presents') || 'a bySurfTV Exclusive';
+  const title = link.getAttribute('data-title') || 'No Title';
+  const tags = link.getAttribute('data-tags') || 'No Tags';
+  const description = link.getAttribute('data-description') || 'No Description Available';
+  const episodes = JSON.parse(link.getAttribute('data-episodes') || '[]');
+  const backgroundUrl = link.getAttribute('data-background');
+
+  // Update modal content
+  modalPresents.textContent = presents;
+  modalTitle.textContent = title;
+  modalTags.textContent = tags;
+  modalDescription.textContent = description;
+  episodeList.innerHTML = '';
+
+
+        episodes.forEach(function (episode) {
+            const episodeItem = document.createElement('div');
+            episodeItem.className = 'episode';
+            episodeItem.innerHTML = `
+                <img src="https://bysurf.github.io/tvserver/img/${episode.thumbnail}" alt="${episode.title}">
+                <span>${episode.title}<p style="letter-spacing: 0px; color: grey; padding: 0; font-weight: 400;">${episode.description}</p></span>
+            `;
+            episodeItem.addEventListener('click', function () {
+                window.location.href = episode.url;
+            });
+            episodeList.appendChild(episodeItem);
+        });
+
+        // Set the modal header background image
+        if (backgroundUrl) {
+            modalHeader.style.backgroundImage = `url(https://bysurf.github.io/tvserver/img/${backgroundUrl})`;
+        } else {
+            modalHeader.style.backgroundImage = '';
+        }
+
+        // Display the modal
+        modal.classList.add('active');
+        overlay.classList.add('active');
+    });
+});
+
+// Function to close the modal
+const closeModal = function () {
+    modal.classList.remove('active');
+    overlay.classList.remove('active');
+};
+
+modalClose.addEventListener('click', closeModal);
+overlay.addEventListener('click', closeModal);
+});
+
+</script>
+<style>
+   body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+
+    }
+
+
+    h4 {
+        letter-spacing: 1px;
+        margin-bottom: 17px;
+    }
+
+    .new-tag{
+    margin: 20px;
+    position: absolute;
+    background: rgba(255,255,255,0.15);
+      border: 1px solid white;
+    color: white;
+    border-radius: 15px;
+    padding: 2px 20px;
+    z-index: 99999999;
+    font-weight: normal;
+    letter-spacing: 0px;
+      backdrop-filter: blur(5px);
+    }
+
+    .new-vid-text{
+        position: absolute;
+        z-index: 999999999;
+        bottom: 0;
+        margin: 50px 30px;
+        text-shadow: 0px 0px 20px black;
+    }
+
+    .new-vid-p{
+        position: absolute;
+        z-index: 999999999;
+        bottom: 0;
+        margin: 30px 30px;
+        font-weight: normal;
+        letter-spacing: 0px;
+        text-shadow: 0px 0px 20px black;
+    }
+
+.new-vid-text, .new-vid-p{
+
+}
+    .library {
+        padding: 20px;
+    }
+    .content {
+        display: inline-flex;
+      flex-direction: row-reverse;
+        gap: 15px;
+        
+        margin-bottom: 12px;
+        z-index: 9;
+
+    }
+    .content img {
+        max-width: fit-content;
+        
+    }
+    .content a img {
+        padding: 10px;
+        height: 250px;
+        cursor: pointer;
+        filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.4));
+        border-radius: 15px;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+    }
+
+    .content a{
+        transition: 0.4s cubic-bezier(0.4, -0.01, 0, 1);
+        border: 4px solid transparent;
+        border-radius: 15px;
+        transform: translateY(0px);
+        
+    }
+    .content a:hover {
+        transform: translateY(-8px);
+        border: 4px solid rgba(255, 255, 255, 0.356);
+    }
+
+    .content a:hover:active{
+        border: 4px solid rgba(255, 255, 255, 1);
+    }
+
+    .new-content-text{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+
+    .new-content-text h1, p{
+        font-size: small;
+        margin-left: 15px;
+    }
+
+    #new-content-cont::before{
+        content: '';
+        position: absolute;
+        width: 100%;/* Adjust width for the fade-out area */
+        height: 100%;
+        z-index: 9999999999999;
+        pointer-events: none; /* Allows interaction with the content */
+    }
+
+
+    .modal {
+              display: block;
+        color: white;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        width: 80%;
+        max-width: 800px;
+        background: #0f0f0f;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        opacity: 0;
+        transition: transform 0.6s cubic-bezier(0.4, -0.01, 0, 1), opacity 0.3s ease;
+        padding: 0;
+      font-weight: bold;
+    }
+
+    .modal-gradient {
+        position: relative;
+    }
+    
+    .new-content-gradient::before,
+    .new-content-gradient::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; /* Allows interaction with the content */
+        z-index: 999;
+        border-radius: 15px;
+    }
+    
+    .new-content-gradient::before {
+        left: 0;
+        background: linear-gradient(45deg, rgba(15,15,15,0.75) 2%, rgba(255,255,255,0) 100%);
+        border-radius: 15px;
+    }
+
+    .modal-gradient::before,
+    .gmodal-gradient::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;/* Adjust width for the fade-out area */
+        height: 102%;
+      z-index: 10;
+        pointer-events: none; /* Allows interaction with the content */
+    }
+    
+    .modal-gradient::before {
+        left: 0;
+        background: linear-gradient(16deg, #0f0f0f 10%, transparent);
+    }
+.modal-txt{
+    bottom: 0;
+    position: absolute;
+    margin-bottom: 20px;
+    text-align: center;
+    max-width: 40%;
+}
+
+    .content-long{
+    z-index: 1;
+    overflow: auto;
+    padding-top: 8px;
+    
+    }
+    
+    .content-long::before{
+    z-index: 2;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0) 75%, rgba(255, 0, 0, 0.4318102240896359) 100%);
+    }
+
+    .gallery-container {
+        position: relative;
+    }
+    
+    .gallery-container::before,
+    .gallery-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 50px; /* Adjust width for the fade-out area */
+        z-index: 10;
+        pointer-events: none; /* Allows interaction with the content */
+    }
+        .gallery-container::before {
+        left: 0;
+        background: linear-gradient(to right, rgba(15, 15, 15, 0.2), rgba(15, 15, 15, 0));
+    }
+    
+    .gallery-container::after {
+        right: 0;
+        background: linear-gradient(to left, rgba(15, 15, 15, 0.2), rgba(15, 15, 15, 0));
+    }
+    .modal.active {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 1;
+    }
+    .modal-header {
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 250px 0px;
+        background-position: left center;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .modal-close {
+        font-size: 40px;
+        cursor: pointer;
+        top: 0;
+        right: 0;
+        position: absolute;
+        padding: 5px;
+        color: white;
+        z-index: 20;
+    }
+    .modal-content p {
+        margin: 0px 0px;
+    }
+    .episode-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 25px;
+    }
+    .episode {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+    .episode img {
+        width: 200px;
+        height: auto;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.0);
+      backdrop-filter: blur(0px);
+        z-index: 999;
+        pointer-events: none;
+        transition: 0.6s cubic-bezier(0.4, -0.01, 0, 1);
+    }
+    .overlay.active {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+        pointer-events: all;
+    }
+
+::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #0f0f0f;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 25px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #009dff;
+    }
+
+@media screen and (max-width: 768px) {
+    .modal {
+        width: 95%; /* Adjust modal width for smaller screens */
+        max-width: 95%;
+    }
+
+  .modal-txt{
+    max-width: 100%;
+  }
+
+    .modal-header {
+        background-size: cover;
+      background-position: center center;
+    }
+
+    #modal-title {
+      font-size: 1.5rem;
+        padding: 0 15px;
+    }
+
+    #modal-description {
+        font-size: 1rem; /* Adjust font size for the description */
+        padding: 0 15px;
+        opacity: 0.8;
+    }
+
+    .episode img {
+        width: 100%; /* Ensure images are responsive */
+        height: auto;
+        border-radius: 4px;
+    }
+
+    .episode span {
+        display: block;
+        margin-top: 10px;
+        font-size: 1rem;
+        text-align: center;
+    }
+
+  .episode {
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    align-items: center; /* Center-align the content */
+    text-align: center;
+    margin-bottom: 15px; /* Add spacing between episodes */
+}
+
+.episode img {
+    width: 100%; /* Ensure image is responsive */
+    height: auto;
+    border-radius: 4px; /* Optional: Add a border radius */
+}
+
+.episode span {
+    margin-top: 10px; /* Add spacing between the image and text */
+    font-size: 1rem;
+    display: block; /* Ensure the span takes a full line */
+}
+    .modal-gradient {
+        width: 100%; /* Ensure gradient fits the modal width */
+    }
+
+    .modal-gradient::before,
+    .modal-gradient::after {
+        width: 100%; /* Scale gradient width to fit mobile screens */
+    }
+
+  h4{
+    margin-top: 15px;
+    margin-bottom: 15px
+  }
+}
+
+@media screen and (max-width: 480px) {
+    .modal {
+        width: 100%; /* Take full width on very small screens */
+        border-radius: 0; /* Remove border radius for edge-to-edge effect */
+    }
+.modal-txt{
+    max-width: 100%;
+  }
+
+    #modal-title {
+        font-size: 1.5rem; /* Further reduce font size */
+    }
+
+    #modal-description {
+        font-size: 0.9rem;
+    }
+
+  .episode {
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    align-items: center; /* Center-align the content */
+    text-align: center;
+    margin-bottom: 15px; /* Add spacing between episodes */
+}
+
+.episode img {
+    width: 100%; /* Ensure image is responsive */
+    height: auto;
+    border-radius: 4px; /* Optional: Add a border radius */
+}
+
+.episode span {
+    margin-top: 10px; /* Add spacing between the image and text */
+    font-size: 1rem;
+    display: block; /* Ensure the span takes a full line */
+}
+    .modal-gradient {
+        width: 100%; /* Ensure gradient fits the modal width */
+    }
+
+    .modal-gradient::before,
+    .modal-gradient::after {
+        width: 100%; /* Scale gradient width to fit mobile screens */
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .new-tag {
+        font-size: 14px; /* Adjust font size for smaller screens */
+        padding: 2px 10px; /* Adjust padding */
+    }
+
+    .new-vid-text {
+        font-size: 12px; /* Reduce font size */
+        margin: 50px 15px; /* Adjust margin */
+    }
+
+    .new-vid-p {
+        font-size: 12px; /* Reduce font size */
+        margin: 30px 15px; /* Adjust margin */
+    }.modal-txt{
+    max-width: 100%;
+  }
+
+}
+
+@media screen and (max-width: 480px) {
+    .new-tag {
+        font-size: 12px; /* Further reduce font size */
+        padding: 2px 8px; /* Adjust padding */
+    }
+
+    .new-vid-text {
+        font-size: 15px; /* Further reduce font size */
+        margin: 32px 20px; /* Adjust margin */
+    }
+
+    .new-vid-p {
+        font-size: 12px; /* Further reduce font size */
+        margin: 15px 20px; /* Adjust margin */
+    }.modal-txt{
+    max-width: 100%;
+  }
+
+
+}
+</style>
+    
+</body>
+</html>
+<script>
+// Save f to localStorage
+function saveToLocalStorage() {
+    localStorage.setItem('libraryHTML', libraryHTML);
+    console.log('Library saved to localStorage.');
+}
+
+// Load libraryHTML from localStorage
+function loadFromLocalStorage() {
+    const savedLibraryHTML = localStorage.getItem('libraryHTML');
+    if (savedLibraryHTML) {
+        libraryHTML = savedLibraryHTML;
+        updatePreview();
+        console.log('Library loaded from localStorage.');
+    } else {
+        console.log('No saved library found.');
+    }
+}
+
+// Automatically save library whenever a button modifies it
+document.querySelectorAll('.editor button').forEach(button => {
+    button.addEventListener('click', () => {
+        saveToLocalStorage();
+    });
+});
+
+// Load libraryHTML when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadFromLocalStorage();
+});
+// Clear the library
+document.getElementById('clear-library').addEventListener('click', () => {
+    const userConfirmed = confirm('Are you sure you want to clear the video library? This action cannot be undone.');
+    
+    if (userConfirmed) {
+        localStorage.removeItem('libraryHTML');
+        libraryHTML = `
+                    <div class="gallery-container">
+        <div class="content-long">
+    <div class="content">
+<h4>Library Deleted. Please Import a new Library.</h4>
+</div></div></div>`;
+        updatePreview();
+        console.log('Library cleared.');
+        alert('Library cleared successfully.');
+    } else {
+        console.log('Library clear action canceled.');
+    }
+});
+
+
+// Populate show dropdowns for deletion
+function populateDeleteDropdowns() {
+    const deleteShowSelect = document.getElementById('delete-show');
+    const deleteEpisodeShowSelect = document.getElementById('delete-episode-show');
+    deleteShowSelect.innerHTML = '<option value="">-- Select Show --</option>';
+    deleteEpisodeShowSelect.innerHTML = '<option value="">-- Select Show --</option>';
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(libraryHTML, 'text/html');
+    const shows = doc.querySelectorAll('.content a[data-title]');
+
+    shows.forEach(show => {
+        const title = show.getAttribute('data-title');
+        if (title) {
+            const option = document.createElement('option');
+            option.value = title.trim();
+            option.textContent = title.trim();
+            deleteShowSelect.appendChild(option);
+
+            const optionClone = option.cloneNode(true);
+            deleteEpisodeShowSelect.appendChild(optionClone);
+        }
+    });
+}
+
+// Populate episode dropdown for the selected show
+document.getElementById('delete-episode-show').addEventListener('change', () => {
+    const selectedShow = document.getElementById('delete-episode-show').value;
+    const deleteEpisodeSelect = document.getElementById('delete-episode');
+    deleteEpisodeSelect.innerHTML = '<option value="">-- Select Episode --</option>';
+
+    if (!selectedShow) return;
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(libraryHTML, 'text/html');
+    const show = Array.from(doc.querySelectorAll('.content a')).find(a => a.getAttribute('data-title') === selectedShow);
+
+    if (show) {
+        const episodes = JSON.parse(show.getAttribute('data-episodes') || '[]');
+        episodes.forEach((episode, index) => {
+            const option = document.createElement('option');
+            option.value = index; // Use index to identify the episode
+            option.textContent = episode.title;
+            deleteEpisodeSelect.appendChild(option);
+        });
+    }
+});
+
+// Delete a show
+document.getElementById('delete-show-button').addEventListener('click', () => {
+    const selectedShow = document.getElementById('delete-show').value;
+
+    if (!selectedShow) {
+        return alert('Please select a show to delete.');
+    }
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(libraryHTML, 'text/html');
+    const show = Array.from(doc.querySelectorAll('.content a')).find(a => a.getAttribute('data-title') === selectedShow);
+
+    if (show) {
+        show.parentElement.removeChild(show); // Remove the show from the DOM
+        libraryHTML = doc.body.innerHTML;
+        updatePreview();
+        saveToLocalStorage();
+        populateDeleteDropdowns();
+        alert('Show deleted successfully.');
+    }
+});
+
+// Delete an episode
+document.getElementById('delete-episode-button').addEventListener('click', () => {
+    const selectedShow = document.getElementById('delete-episode-show').value;
+    const selectedEpisodeIndex = document.getElementById('delete-episode').value;
+
+    if (!selectedShow || selectedEpisodeIndex === '') {
+        return alert('Please select a show and episode to delete.');
+    }
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(libraryHTML, 'text/html');
+    const show = Array.from(doc.querySelectorAll('.content a')).find(a => a.getAttribute('data-title') === selectedShow);
+
+    if (show) {
+        const episodes = JSON.parse(show.getAttribute('data-episodes') || '[]');
+        episodes.splice(selectedEpisodeIndex, 1); // Remove the selected episode
+        show.setAttribute('data-episodes', JSON.stringify(episodes));
+
+        libraryHTML = doc.body.innerHTML;
+        updatePreview();
+        saveToLocalStorage();
+        document.getElementById('delete-episode').innerHTML = '<option value="">-- Select Episode --</option>';
+        alert('Episode deleted successfully.');
+    }
+});
+
+// Update dropdowns on page load and after changes
+document.addEventListener('DOMContentLoaded', populateDeleteDropdowns);
+document.querySelectorAll('.editor button').forEach(button => {
+    button.addEventListener('click', populateDeleteDropdowns);
+});
+
+// Toggle between Add and Delete sections
+document.getElementById('delete-tab').addEventListener('click', () => {
+    const addSection = document.getElementById('add-content-section');
+    const deleteSection = document.getElementById('delete-content-section');
+
+    addSection.style.display = 'none';
+    deleteSection.style.display = 'block';
+});
+
+// Back to Add Tab button functionality
+document.getElementById('back-to-add-tab').addEventListener('click', () => {
+    const addSection = document.getElementById('add-content-section');
+    const deleteSection = document.getElementById('delete-content-section');
+
+    addSection.style.display = 'block';
+    deleteSection.style.display = 'none';
+});
+// Export library
+document.getElementById('export-library').addEventListener('click', () => {
+    const libraryData = localStorage.getItem('libraryHTML');
+    if (!libraryData) return alert('No library data to export.');
+
+    // Prompt the user for a file name
+    const fileName = prompt('Enter a file name for the exported library:', 'libraryHTML');
+
+    // If the user cancels or enters an empty name, use a default name
+    const finalFileName = fileName ? fileName.trim() : 'libraryHTML';
+
+    const blob = new Blob([libraryData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${finalFileName}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
+
+
+// Import library
+// Trigger file input when the import button is clicked
+document.getElementById('import-library-button').addEventListener('click', () => {
+    document.getElementById('import-library').click();
+});
+
+// Handle file import
+document.getElementById('import-library').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const importedData = e.target.result; // Get the file content as a string
+                localStorage.setItem('libraryHTML', importedData); // Save to localStorage
+                alert('Library imported successfully! Refresh this page to see the new library.');
+                updatePreview(); // Refresh the preview
+            } catch (error) {
+                console.error('Error importing library:', error);
+                alert(`Import failed: ${error.message}. Please upload a valid JSON file.`);
+            }
+        };
+        reader.readAsText(file); // Read the file content as text
+    }
+});
+
+
+
+</script>
