@@ -42,6 +42,13 @@
             transition: 0.3s ease-in-out;
             transform: scale(1);
         }
+        #banner {
+    width: 100vw;  /* Ensure full width */
+    height: auto;  /* Maintain aspect ratio */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
         .banner p {
             font-size: clamp(12px, 1.5vw, 16px);
@@ -51,7 +58,8 @@
         }
 
         .loading-bar-container {
-            width: 40%;
+            width: 100%;
+    max-width: 800px; /* Set a fixed maximum width */
             border: 2px solid white;
             height: 40px;
             display: flex;
@@ -64,6 +72,7 @@
         }
         .loading-bar {
             height: 100%;
+            max-width: 100%;
             background: white;
             font-weight: bold;
             color: white;
@@ -113,7 +122,7 @@
             <p id="loadingText">LOADING...</p>
             <div class="loading-bar-container">
                 <div class="loading-bar" id="loadingBar" style="width: 50%;"></div>
-                <div class="loading-bar-text" id="loadingTextPercent">50%</div>
+                <div class="loading-bar-text" id="loadingTextPercent" style="margin-left: 6px;">50%</div>
             </div>
             <p id="paragraph1">NEW MERCH COLLECTION COMING SOON!</p>
             <p id="paragraph2">GOT A SUSPICIOUS SCAM EMAIL OR POP-UP? FORWARD IT TO OUR TIPLINE: NANOBAITERTIPLINE@GMAIL.COM</p>
@@ -152,18 +161,35 @@
         }
 
         function saveBanner() {
-            html2canvas(document.getElementById("banner"), { 
-                width: 2048, 
-                height: 1152, 
-                scale: 1, 
-                useCORS: true 
-            }).then(canvas => {
-                let link = document.createElement('a');
-                link.href = canvas.toDataURL("image/png");
-                link.download = "youtube_banner.png";
-                link.click();
-            });
-        }
+    let banner = document.getElementById("banner");
+
+    // Temporarily set fixed size for proper rendering
+    let originalWidth = banner.style.width;
+    let originalHeight = banner.style.height;
+
+    banner.style.width = "2048px";
+    banner.style.height = "1152px";
+
+    html2canvas(banner, { 
+        width: 2048, 
+        height: 1152, 
+        scale: 2,  // Higher quality
+        useCORS: true
+    }).then(canvas => {
+        let link = document.createElement('a');
+        link.href = canvas.toDataURL("image/png");
+        link.download = "youtube_banner.png";
+        link.click();
+
+        // Reset banner to original size
+        banner.style.width = originalWidth;
+        banner.style.height = originalHeight;
+    });
+}
+
+
+
+
     </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
