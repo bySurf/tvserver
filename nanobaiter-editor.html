@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NanoBaiter Banner Editor</title>
+    <link rel="shortcut icon" href="https://yt3.googleusercontent.com/ADRxo217yeLoxWig9GaByYntQbce0Z1iG6-XuDvOOCbPgRDo-5bgyDXIdtcDU9QiZXWRrWsE3g=s900-c-k-c0x00ffffff-no-rj" type="image/x-icon">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light+Two&display=swap');
         
         * {
             font-family: "IBM Plex Mono", monospace;
@@ -101,7 +103,12 @@
             background: white;
             color: black;
         }
-
+        h1, p {
+            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.4);
+        }
+        .chromatic-aberration {
+            text-shadow: -1px 0px 2px cyan, 2px 0px 3px red, 0px 0px 10px rgba(255, 255, 255, 0.4);
+        }
         @media (max-width: 768px) {
             .banner {
                 width: 90%;
@@ -118,7 +125,7 @@
 <body>
     <div class="banner-wrapper">
         <div class="banner" id="banner">
-            <h1 id="title">"SUBSCRIBE TO GET TO 1M" - NanoBaiter</h1>
+            <h1 id="title">"SUBSCRIBE TO GET TO 1M" - <span style="font-family: Shadows Into Light Two, serif">NanoBaiter</span></h1>
             <p id="loadingText">LOADING...</p>
             <div class="loading-bar-container">
                 <div class="loading-bar" id="loadingBar" style="width: 50%;"></div>
