@@ -5,27 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NanoBaiter Banner Editor</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Shadows+Into+Light+Two&display=swap');
-        </style>
-        
-    <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
         
-        *{
+        * {
             font-family: "IBM Plex Mono", monospace;
+            box-sizing: border-box;
         }
 
         body {
-            
             background-color: black;
             color: white;
             text-align: center;
             padding: 20px;
             letter-spacing: 1px;
         }
+
+        .banner-wrapper {
+            width: 100%;
+            max-width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
         .banner {
+            width: 100%;
             max-width: 2048px;
-            height: 1152px;
+            aspect-ratio: 2048 / 1152;
             background-color: black;
             display: flex;
             flex-direction: column;
@@ -33,14 +40,16 @@
             justify-content: center;
             position: relative;
             transition: 0.3s ease-in-out;
-            margin: auto;
+            transform: scale(1);
         }
 
-        .banner p{
-            font-size: 16px;
+        .banner p {
+            font-size: clamp(12px, 1.5vw, 16px);
             font-weight: bold;
             max-width: 30%;
+            text-align: center;
         }
+
         .loading-bar-container {
             width: 40%;
             border: 2px solid white;
@@ -63,31 +72,12 @@
             justify-content: right;
             transition: 0.3s ease-in-out;
         }
-        .loading-bar-text {
-            margin-left: 10px;
-            font-weight: bold;
-            color: white;
-        }
-        h1, p {
-            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.4);
-        }
-        .glow {
-            box-shadow: 0 0 10px white;
-        }
-        .chromatic-aberration {
-            text-shadow: -1px 0px 2px cyan, 2px 0px 3px red, 0px 0px 10px rgba(255, 255, 255, 0.4);
-        }
+
         .controls {
-            margin: 0px;
-            transform: translateY(-45px);
+            margin-top: 20px;
         }
 
-        #loadingText{
-            font-size: 30px;
-            margin: 0px 0px 14px 0px;
-        }
-
-        #save-btn{
+        #save-btn {
             border: 1px solid white;
             outline: none;
             color: white;
@@ -98,57 +88,44 @@
             transition: .3s ease;
         }
 
-        #save-btn:hover{
+        #save-btn:hover {
             background: white;
             color: black;
         }
 
-        #progressSlider{
-            -webkit-appearance: none;
-  height: 15px;
-  border-radius: 25px;
-  background: transparent;
-  border: 1px solid white;
-  outline: none;
-  opacity: 1;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
+        @media (max-width: 768px) {
+            .banner {
+                width: 90%;
+            }
+            .loading-bar-container {
+                width: 80%;
+            }
+            .banner p {
+                max-width: 50%;
+            }
         }
-
-        #progressSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 30px;
-  height: 15px;
-  border-radius: 50px;
-  background: white;
-  border: 1px solid white;
-  cursor: pointer;
-}
-
     </style>
 </head>
 <body>
-    <div class="banner" id="banner">
-        <h1 id="title">"SUBSCRIBE TO GET TO 1M" - <span style="font-family: Shadows Into Light Two, serif; font-weight: bolder;">NanoBaiter</span></h1>
-        <p id="loadingText">LOADING...</p>
-        <div class="loading-bar-container">
-            <div class="loading-bar" id="loadingBar" style="width: 50%;"></div>
-            <div class="loading-bar-text" id="loadingTextPercent">50%</div>
+    <div class="banner-wrapper">
+        <div class="banner" id="banner">
+            <h1 id="title">"SUBSCRIBE TO GET TO 1M" - NanoBaiter</h1>
+            <p id="loadingText">LOADING...</p>
+            <div class="loading-bar-container">
+                <div class="loading-bar" id="loadingBar" style="width: 50%;"></div>
+                <div class="loading-bar-text" id="loadingTextPercent">50%</div>
+            </div>
+            <p id="paragraph1">NEW MERCH COLLECTION COMING SOON!</p>
+            <p id="paragraph2">GOT A SUSPICIOUS SCAM EMAIL OR POP-UP? FORWARD IT TO OUR TIPLINE: NANOBAITERTIPLINE@GMAIL.COM</p>
         </div>
-        <p id="paragraph1">NEW MERCH COLLECTION COMING SOON!</p>
-        <p id="paragraph2">GOT A SUSPICIOUS SCAM EMAIL OR POP-UP? FORWARD IT TO OUR TIPLINE: NANOBAITERTIPLINE@GMAIL.COM</p>
     </div>
     
     <div class="controls">
         Progressbar Slider
         <input type="range" id="progressSlider" min="0" max="100" value="50" oninput="updateProgress()">
-        <br>
-        <br>
-        <!----label><input type="checkbox" id="glowEffect" onchange="toggleGlow()"> Glow Effect</label--->
+        <br><br>
         <label><input type="checkbox" id="chromaticEffect" onchange="toggleChromatic()"> RGB Split</label>
-        <br>
-        <br>
+        <br><br>
         <button onclick="saveBanner()" id="save-btn">Save Banner</button>
     </div>
     
@@ -161,66 +138,32 @@
             loadingTextPercent.textContent = slider.value + "%";
         }
 
-        function toggleGlow() {
-            let banner = document.getElementById("banner");
-            if (document.getElementById("glowEffect").checked) {
-                banner.classList.add("glow");
-            } else {
-                banner.classList.remove("glow");
-            }
-        }
-
         function toggleChromatic() {
-            let slider = document.getElementById("progressSlider");
-            let loadingBar = document.getElementById("loadingBar");
-            let loadingTextPercent = document.getElementById("loadingTextPercent");
-            let title = document.getElementById("title");
-            let paragraph1 = document.getElementById("paragraph1");
-            let paragraph2 = document.getElementById("paragraph2");
-            let loadingText = document.getElementById("loadingText");
-            if (document.getElementById("chromaticEffect").checked) {
-                title.classList.add("chromatic-aberration");
-                loadingText.classList.add("chromatic-aberration");
-                paragraph1.classList.add("chromatic-aberration");
-                paragraph2.classList.add("chromatic-aberration");
-                loadingBar.classList.add("chromatic-aberration");
-                loadingTextPercent.classList.add("chromatic-aberration");
-                slider.classList.add("chromatic-aberration");
-            } else {
-                title.classList.remove("chromatic-aberration");
-                loadingText.classList.remove("chromatic-aberration");
-                paragraph1.classList.remove("chromatic-aberration");
-                paragraph2.classList.remove("chromatic-aberration");
-                loadingBar.classList.remove("chromatic-aberration");
-                loadingTextPercent.classList.remove("chromatic-aberration");
-                slider.classList.remove("chromatic-aberration");
-            }
+            let elements = [
+                document.getElementById("title"),
+                document.getElementById("loadingText"),
+                document.getElementById("paragraph1"),
+                document.getElementById("paragraph2"),
+                document.getElementById("loadingBar"),
+                document.getElementById("loadingTextPercent"),
+                document.getElementById("progressSlider")
+            ];
+            elements.forEach(el => el.classList.toggle("chromatic-aberration"));
         }
 
         function saveBanner() {
-    let loadingBar = document.getElementById("loadingBar");
-
-    // Temporarily remove the gradient effect to ensure it's captured
-    let originalBg = loadingBar.style.background;
-    loadingBar.style.background = "white";
-
-    setTimeout(() => {
-        html2canvas(document.getElementById("banner"), { 
-            scale: 2, 
-            useCORS: true, 
-            willReadFrequently: true 
-        }).then(canvas => {
-            let link = document.createElement('a');
-            link.href = canvas.toDataURL("image/png");
-            link.download = "youtube_banner.png";
-            link.click();
-
-            // Restore original gradient background
-            loadingBar.style.background = originalBg;
-        });
-    }, 100);
-}
-
+            html2canvas(document.getElementById("banner"), { 
+                width: 2048, 
+                height: 1152, 
+                scale: 1, 
+                useCORS: true 
+            }).then(canvas => {
+                let link = document.createElement('a');
+                link.href = canvas.toDataURL("image/png");
+                link.download = "youtube_banner.png";
+                link.click();
+            });
+        }
     </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
