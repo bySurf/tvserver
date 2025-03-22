@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NanoBaiter Banner Editor</title>
     <link rel="shortcut icon" href="https://yt3.googleusercontent.com/ADRxo217yeLoxWig9GaByYntQbce0Z1iG6-XuDvOOCbPgRDo-5bgyDXIdtcDU9QiZXWRrWsE3g=s900-c-k-c0x00ffffff-no-rj" type="image/x-icon">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light+Two&display=swap');
@@ -20,6 +21,7 @@
             text-align: center;
             padding: 20px;
             letter-spacing: 1px;
+            display: block;
         }
 
         .banner-wrapper {
@@ -28,7 +30,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow: visible !important;
         }
 
         .banner {
@@ -44,13 +46,15 @@
             transition: 0.3s ease-in-out;
             transform: scale(1);
         }
+
         #banner {
-    width: 100vw;  /* Ensure full width */
-    height: auto;  /* Maintain aspect ratio */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+            width: 100vw;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.199);
+        }
 
         .banner p {
             font-size: clamp(12px, 1.5vw, 16px);
@@ -61,7 +65,7 @@
 
         .loading-bar-container {
             width: 100%;
-    max-width: 800px; /* Set a fixed maximum width */
+            max-width: 800px;
             border: 2px solid white;
             height: 40px;
             display: flex;
@@ -69,9 +73,14 @@
             justify-content: left;
             margin: 10px;
             position: relative;
-            background: black;
+            background: rgb(0, 0, 0);
             padding: 5px;
+            z-index: 111;
+            
+            /* Replace filter: drop-shadow() with box-shadow */
+            box-shadow: 0px 0px 18px rgba(255, 255, 255, 0.6);
         }
+
         .loading-bar {
             height: 100%;
             max-width: 100%;
@@ -103,12 +112,16 @@
             background: white;
             color: black;
         }
-        h1, p {
-            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.4);
+
+        h1, p, .loading-bar-container {
+            background: none;
+            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8);
         }
+
         .chromatic-aberration {
-            text-shadow: -1px 0px 2px cyan, 2px 0px 3px red, 0px 0px 10px rgba(255, 255, 255, 0.4);
+            text-shadow: -1px 0px 5px cyan, 2px 0px 6px red, 0px 0px 10px rgba(255, 255, 255, 0.4);
         }
+
         @media (max-width: 768px) {
             .banner {
                 width: 90%;
@@ -123,6 +136,7 @@
     </style>
 </head>
 <body>
+    
     <div class="banner-wrapper">
         <div class="banner" id="banner">
             <h1 id="title">"SUBSCRIBE TO GET TO 1M" - <span style="font-family: Shadows Into Light Two, serif">NanoBaiter</span></h1>
@@ -167,36 +181,43 @@
             elements.forEach(el => el.classList.toggle("chromatic-aberration"));
         }
 
+        function forceRedraw(element) {
+            element.style.display = "none";
+            element.offsetHeight; // Trigger reflow
+            element.style.display = "block";
+        }
+
         function saveBanner() {
-    let banner = document.getElementById("banner");
+            let banner = document.getElementById("banner");
 
-    // Temporarily set fixed size for proper rendering
-    let originalWidth = banner.style.width;
-    let originalHeight = banner.style.height;
+            banner.style.width = "2048px";
+            banner.style.height = "1152px";
+            window.devicePixelRatio = 2;
 
-    banner.style.width = "2048px";
-    banner.style.height = "1152px";
+            forceRedraw(banner); // Force repaint
 
-    html2canvas(banner, { 
-        width: 2048, 
-        height: 1152, 
-        scale: 2,  // Higher quality
-        useCORS: true
-    }).then(canvas => {
-        let link = document.createElement('a');
-        link.href = canvas.toDataURL("image/png");
-        link.download = "youtube_banner.png";
-        link.click();
+            document.fonts.ready.then(() => {
+                setTimeout(() => {
+                    html2canvas(banner, { 
+                        width: 2048, 
+                        height: 1152, 
+                        scale: 2,  
+                        useCORS: true,
+                        backgroundColor: null, 
+                        willReadFrequently: true, 
+                        foreignObjectRendering: true 
+                    }).then(canvas => {
+                        let link = document.createElement('a');
+                        link.href = canvas.toDataURL("image/png");
+                        link.download = "youtube_banner.png";
+                        link.click();
 
-        // Reset banner to original size
-        banner.style.width = originalWidth;
-        banner.style.height = originalHeight;
-    });
-}
-
-
-
-
+                        banner.style.width = "";
+                        banner.style.height = "";
+                    });
+                }, 500);
+            });
+        }
     </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
